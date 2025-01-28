@@ -3,76 +3,79 @@ import "./ImageUploader.css"; // นำเข้า CSS
 
 const ImageUploader = () => {
   const [files, setFiles] = useState([]);
-  const [concept, setConcept] = useState("");
+  const [selectAll, setSelectAll] = useState(false);
+  const [watermarks, setWatermarks] = useState(["ลายน้ำ"]);
+  const [newWatermark, setNewWatermark] = useState("");
 
   const handleFileChange = (event) => {
     setFiles(Array.from(event.target.files));
   };
 
-  const handleUpload = () => {
-    if (files.length === 0) {
-      alert("กรุณาเลือกไฟล์ก่อน!");
-    } else {
-      alert(`Uploading ${files.length} files...`);
-    }
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
   };
 
-  const handleConceptToPrompt = () => {
-    alert(`Concept to prompt: ${concept}`);
+  const handleAddWatermark = () => {
+    if (newWatermark.trim() !== "") {
+      setWatermarks([...watermarks, newWatermark]);
+      setNewWatermark("");
+    }
   };
 
   return (
     <div className="image-uploader">
-      {/* STEP 1 */}
+      {/* ELIMINATE SECTION */}
       <div className="step">
-        <h1>STEP 1</h1>
+        <h1>ELIMINATE</h1>
         <div className="step-container">
-          <h2>CONCEPT TO PROMTP</h2>
-          <textarea
-            placeholder="ใส่ concept ที่นี่"
-            value={concept}
-            onChange={(e) => setConcept(e.target.value)}
-          ></textarea>
-          <button onClick={handleConceptToPrompt}>START</button>
-          <button className="download-btn">DOWNLOAD PROMTP</button>
+          <label>
+            <input type="checkbox" checked={selectAll} onChange={handleSelectAll} /> ทั้งหมด
+          </label>
+          <div className="checkbox-grid">
+            {Array(25).fill(0).map((_, index) => (
+              <label key={index}>
+                <input type="checkbox" checked={selectAll} /> {watermarks[index % watermarks.length]}
+              </label>
+            ))}
+          </div>
+          <input 
+            type="text" 
+            placeholder="เพิ่มคำใหม่" 
+            value={newWatermark} 
+            onChange={(e) => setNewWatermark(e.target.value)}
+          />
+          <button className="add-watermark-btn" onClick={handleAddWatermark}>เพิ่มคำ</button>
         </div>
       </div>
 
-      {/* STEP 2 */}
+      {/* IMAGE FILTER SECTION */}
       <div className="step">
-        <h1>STEP 2</h1>
+        <h1>คัดภาพ ผ่าน/ไม่ผ่าน</h1>
         <div className="step-container">
           <h2>คัดภาพ ผ่าน/ไม่ผ่าน</h2>
           <div className="upload-container">
-            <input
-              type="file"
-              id="file-input"
-              multiple
-              onChange={handleFileChange}
-            />
+            <input type="file" id="file-input" multiple onChange={handleFileChange} />
             <label htmlFor="file-input">
-              {files.length > 0
-                ? `${files.length} รูปภาพถูกเลือก`
-                : "Choose an image to upload"}
+              {files.length > 0 ? `${files.length} รูปภาพถูกเลือก` : "Choose an image to upload"}
             </label>
-            <button onClick={handleUpload}>START</button>
+            <button className="start-btn">START</button>
           </div>
+          <button className="pass-btn">PASS</button>
+          <button className="not-pass-btn">NOT PASS</button>
         </div>
       </div>
 
-      {/* STEP 3 */}
+      {/* KEYWORD SECTION */}
       <div className="step">
-        <h1>STEP 3</h1>
+        <h1>KEYWORD</h1>
         <div className="step-container">
           <h2>KEYWORD</h2>
           <div className="upload-container">
             <label htmlFor="file-input">Choose an image to upload</label>
-            <button>START</button>
+            <button className="start-btn">START</button>
           </div>
           <button className="download-btn">DOWNLOAD ADOBE</button>
-          <button className="download-btn">DOWNLOAD ADOBE</button>
-          <button className="download-btn">DOWNLOAD ADOBE</button>
-          <button className="download-btn">DOWNLOAD ADOBE</button>
+          <button className="download-btn">DOWNLOAD SHUTTERSTOCK</button>
         </div>
       </div>
     </div>
